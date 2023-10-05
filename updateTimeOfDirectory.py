@@ -2,6 +2,16 @@ import os
 import time
 import PySimpleGUI as sg
 
+# GUI layout
+layout = [
+    [sg.Text('Select a directory:')],
+    [sg.Input(key='-FOLDER-', enable_events=True), sg.FolderBrowse()],
+    [sg.Button('Update', key='-UPDATE-', disabled=True)],
+    [sg.Output(size=(80, 10))]
+]
+
+window = sg.Window('Update Time Of Directory', layout)
+
 def update_directory_creation_dates(directory):
     dates = []
     for item in os.listdir(directory):
@@ -17,18 +27,9 @@ def update_directory_creation_dates(directory):
         # Update directory creation date
         os.utime(directory, (newest_file_mtime, newest_file_mtime))
         print(f"{directory} -> {time.ctime(newest_file_mtime)}")
+        window.read(timeout=0.1)
         return True
     return False
-
-# GUI layout
-layout = [
-    [sg.Text('Select a directory:')],
-    [sg.Input(key='-FOLDER-', enable_events=True), sg.FolderBrowse()],
-    [sg.Button('Update', key='-UPDATE-', disabled=True)],
-    [sg.Output(size=(80, 10))]
-]
-
-window = sg.Window('Update Time Of Directory', layout)
 
 while True:
     event, values = window.read()
